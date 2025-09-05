@@ -1,0 +1,128 @@
+{% extends 'exam/adminbase.html' %}
+{% block content %}
+<head>
+    <style>
+        .page-wrap { max-width: 1050px; margin: 2rem auto; }
+        .hero {
+            background: linear-gradient(135deg, #ecf5ff, #f7f9ff);
+            border: 1px solid #e6eefc;
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 6px 24px rgba(18, 91, 196, 0.06);
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        }
+        .hero h2 { margin: 0; color: #1f4e79; font-weight: 800; letter-spacing: .2px; }
+        .hero p { margin: .25rem 0 0 0; color: #4a5568; }
+        .cta { display: inline-flex; align-items: center; gap: .5rem; background: #1f7a8c; color: #fff; padding: .6rem .9rem; border-radius: 8px; text-decoration: none; font-weight: 600; box-shadow: 0 8px 18px rgba(31,122,140,.18); }
+        .cta:hover { background: #176475; color:#fff; }
+
+        .card { background:#fff; border: 1px solid #edf2f7; border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,.05); padding: 1.25rem 1.25rem; }
+        .card + .card { margin-top: 1rem; }
+
+        .grid { display:grid; grid-template-columns: 220px 1fr 1fr; gap: 1rem; align-items:start; }
+        .head { font-size:1rem; font-weight:800; color:#1f2937; border-bottom:1px solid #e5e7eb; padding-bottom:.6rem; margin-bottom:.6rem; }
+        .row { padding:.6rem 0; border-bottom: 1px dashed #e5e7eb; }
+
+        .badge { display:inline-block; padding:.42rem .7rem; border-radius:999px; font-weight:800; font-size:.9rem; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+        .badge-Physics { background:#0b63ce; color:#ffffff; }
+        .badge-Chemistry { background:#d35400; color:#ffffff; }
+        .badge-Maths { background:#047857; color:#ffffff; }
+        .badge-Biology { background:#3d8b00; color:#ffffff; }
+        .badge-Mix { background:#6b7280; color:#ffffff; }
+
+        .file {
+            width:100%; padding:.8rem; border:2px dashed #9db7d6; border-radius:10px; background:#ffffff;
+        }
+        .file:hover { border-color:#6c8fb4; }
+        .hint { color:#64748b; font-size:.85rem; }
+
+        .select { width:100%; padding:.6rem .75rem; border:2px solid #e2e8f0; border-radius:8px; }
+        .option-box { background:#f8fafc; border:1px dashed #e2e8f0; border-radius:10px; padding: .9rem; }
+
+        .submit { width:100%; padding: .9rem 1rem; border:none; border-radius:10px; background: linear-gradient(135deg, #2563eb, #1e40af); color:#fff; font-weight:800; letter-spacing:.2px; box-shadow:0 10px 20px rgba(30,64,175,.18); cursor:pointer; }
+        .submit:hover { background: linear-gradient(135deg, #1e40af, #1b2f7a); }
+
+        .msgs { margin-top: .75rem; }
+        .msg { padding:.6rem .75rem; border-radius:8px; margin-bottom:.5rem; font-weight:600; }
+        .msg-success { background:#e8f8ef; color:#1b6b3a; border:1px solid #cdebd8; }
+        .msg-error { background:#fde8e8; color:#8a2424; border:1px solid #f7c6c6; }
+
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    </head>
+
+<div class="page-wrap">
+    <div class="hero">
+        <div>
+            <h2>Subject-wise Upload (Format 2)</h2>
+            <p>Upload Questions and Answers PDFs for each section. This page uses the new Format 2 parser.</p>
+        </div>
+        <!-- <a class="cta" href="{% url 'admin-upload-questions-subjectwise' %}">↩ Back to Format 1 Upload</a> -->
+    </div>
+
+    {% if messages %}
+    <div class="msgs">
+        {% for message in messages %}
+            <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" style="margin-top:1rem;">
+        {% csrf_token %}
+
+        <div class="card">
+            <div class="head">Select Test</div>
+            <select name="course" class="select" required>
+                <option value="">Choose a test...</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.course_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="card" style="margin-top:1rem;">
+            <div class="grid head">
+                <div>Subject</div>
+                <div>Questions PDF</div>
+                <div>Answers PDF</div>
+            </div>
+            {% for subj in subjects %}
+            <div class="grid row">
+                <div>
+                    <span class="badge badge-{{ subj }}">{{ subj }}</span>
+                </div>
+                <div>
+                    <input type="file" name="{{ subj|lower }}_questions" accept=".pdf" class="file">
+                    <div class="hint">Upload visual MCQ paper for {{ subj }}</div>
+                </div>
+                <div>
+                    <input type="file" name="{{ subj|lower }}_answers" accept=".pdf" class="file">
+                    <div class="hint">Upload compact answer key for {{ subj }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="hint" style="margin-top:.5rem;">Note: If you upload for a subject, both files (Questions & Answers) are required for that subject.</div>
+        </div>
+
+        <div class="card">
+            <div class="head">Processing Options</div>
+            <div class="option-box">
+                <label style="display:flex; align-items:center; gap:.6rem;">
+                    <input type="checkbox" name="overwrite_existing">
+                    <span>Overwrite existing question images</span>
+                </label>
+                <div style="margin-top:.75rem;">
+                    <label style="font-weight:700;">Expected questions per subject (optional)</label>
+                    <input type="number" name="expected_questions" min="1" class="file" placeholder="e.g. 25">
+                    <div class="hint">If blank, the test Total Questions will be used when available.</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:1rem;"><button type="submit" class="submit"> Process Subject-wise PDFs (Format 2)</button></div>
+    </form>
+</div>
+{% endblock %}
