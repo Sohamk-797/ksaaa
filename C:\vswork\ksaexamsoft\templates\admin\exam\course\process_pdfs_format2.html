@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}Process Format 2 PDFs for {{ course.course_name }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label='exam' %}">Exam</a>
+&rsaquo; <a href="{% url 'admin:exam_course_changelist' %}">Tests</a>
+&rsaquo; <a href="{% url 'admin:exam_course_change' course.pk %}">{{ course.course_name }}</a>
+&rsaquo; Process Format 2 PDFs
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Process Format 2 PDFs for Test: {{ course.course_name }}</h1>
+
+<div class="module aligned">
+    <h2>Upload Format 2 Question and Answer PDFs</h2>
+    
+    <div class="form-row">
+        <div class="help">
+            <p><strong>Format 2 Instructions:</strong></p>
+            <ul>
+                <li><strong>Questions PDF:</strong> Should contain Format 2 structured MCQs with numbered questions and 4 options each.</li>
+                <li><strong>Answers PDF:</strong> Should contain Format 2 answers in the expected format.</li>
+                <li>The system will use Format 2 specific parsing rules to detect question blocks and extract answers.</li>
+                <li>Each question will be saved with an auto-incremented number and associated image.</li>
+                <li><strong>Note:</strong> This uses different parsing logic than Format 1 PDFs.</li>
+            </ul>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <fieldset class="module aligned">
+            <div class="form-row">
+                <div>
+                    <label for="id_questions_pdf" class="required">Format 2 Questions PDF:</label>
+                    <input type="file" name="questions_pdf" id="id_questions_pdf" accept=".pdf" required>
+                    <p class="help">Upload the Format 2 PDF containing visual MCQ questions</p>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div>
+                    <label for="id_answers_pdf" class="required">Format 2 Answers PDF:</label>
+                    <input type="file" name="answers_pdf" id="id_answers_pdf" accept=".pdf" required>
+                    <p class="help">Upload the Format 2 PDF containing answer key</p>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div>
+                    <label for="id_clear_existing">
+                        <input type="checkbox" name="clear_existing" id="id_clear_existing">
+                        Clear existing questions before processing
+                    </label>
+                    <p class="help">Check this to delete all existing questions for this Test before adding new ones</p>
+                </div>
+            </div>
+        </fieldset>
+        
+        <div class="submit-row">
+            <input type="submit" value="Process Format 2 PDFs" class="default" />
+            <a href="{% url 'admin:exam_course_change' course.pk %}" class="button cancel-link">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<div class="module">
+    <h2>Current Test Status</h2>
+    <table>
+        <tr>
+            <th>Test Name:</th>
+            <td>{{ course.course_name }}</td>
+        </tr>
+        <tr>
+            <th>Current Questions:</th>
+            <td>{{ course.question_set.count }}</td>
+        </tr>
+        <tr>
+            <th>Total Marks:</th>
+            <td>{{ course.total_marks }}</td>
+        </tr>
+        <tr>
+            <th>Duration:</th>
+            <td>{{ course.duration_minutes }} minutes</td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td>{{ course.get_status_display }}</td>
+        </tr>
+    </table>
+</div>
+
+<style>
+.help {
+    background: #f0f8ff;
+    border: 1px solid #b0d4f1;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+.help ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.help li {
+    margin: 5px 0;
+}
+
+.cancel-link {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #666;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f8f8f8;
+}
+
+.cancel-link:hover {
+    background: #e8e8e8;
+}
+</style>
+{% endblock %}
