@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <style>
+    body {
+      background: #f8fafc;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #check {
+      display: none;
+    }
+    header {
+      position: fixed;
+      padding: 20px;
+      width: 100%;
+      z-index: 1;
+      height: 5.8em !important;
+      background: #e3f2fd;
+      color: #01579b;
+      border-bottom: 2px solid #b3e5fc;
+    }
+    .left_area h3 {
+      margin: 0px;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 900;
+      color: #0288d1;
+    }
+    /* Brand logo sizing */
+    .left_area .brand-logo { height: 48px; width: auto; display: block; }
+    .logout_btn {
+      padding: 5px 18px;
+      background: #ef5350;
+      text-decoration: none;
+      float: right;
+      margin-top: -30px;
+      margin-right: 40px;
+      border-radius: 0.5rem;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      transition: 0.3s;
+      border: none;
+    }
+    .logout_btn:hover {
+      background: #ca4745;
+    }
+    .sidebar {
+      background: #2171b1;
+      margin-top: 5.8em;
+      padding-top: 30px;
+      position: fixed;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      transition: 0.5s;
+      transition-property: left;
+    }
+    .sidebar .profile_image {
+      width: 100px;
+      height: 100px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+    .sidebar h4 {
+      color: #f3f3f3;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      line-height: 1.2;
+      min-height: 52px;
+      text-decoration: none;
+      padding: 12px 16px 12px 40px;
+      box-sizing: border-box;
+      transition: 0.5s;
+      border-radius: 0.5rem;
+    }
+    .sidebar a:hover {
+      background: #b3e5fc;
+      color: #01579b;
+    }
+    .sidebar i {
+      padding-right: 10px;
+      flex-shrink: 0;
+    }
+    /* Allow long labels to wrap cleanly and keep consistent sizing */
+    .sidebar a span {
+      display: block;
+      white-space: normal;
+      font-size: 14px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+    /* Slightly reduce font size for long upload labels only */
+    .sidebar a[href*="upload-questions-subjectwise"] span,
+    .sidebar a[href*="upload-questions-subjectwise-format2"] span {
+      font-size: 13px;
+    }
+    .content {
+      margin-left: 250px;
+      min-height: 100vh;
+      transition: 0.5s;
+      background: #f8fafc;
+    }
+    .panel-primary {
+      border-color: #0288d1 !important;
+    }
+    .panel-primary > .panel-heading {
+      background-color: #0288d1 !important;
+      border-color: #0288d1 !important;
+    }
+    @media (max-width: 700px) {
+      .sidebar { width: 100px; }
+      .content { margin-left: 100px; }
+    }
+  </style>
+</head>
+<body>
+    <!--header area start-->
+    <header class="shadow">
+      <div class="left_area">
+        <img src="{% static 'image/logoimage.png' %}" alt="Logo" class="brand-logo">
+      </div>
+      <div class="right_area">
+        <a href="/logout" class="logout_btn">Logout</a>
+      </div>
+    </header>
+    <!--header area end-->
+    <!--sidebar start-->
+    <div class="sidebar">
+      <center>
+        <img src="{% static 'image/adminavatar.png' %}" class="profile_image" alt="">
+        <h4>Admin</h4>
+      </center>
+      <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="/admin-student"><i class="fas fa-user-graduate"></i><span>Student Section</span></a>
+      <a href="/admin-course"><i class="fas fa-book"></i><span>Manage Tests</span></a>
+      <a href="/admin-question"><i class="fas fa-question-circle"></i><span>Manage Questions</span></a>
+                      <a href="/upload-questions-subjectwise/"><i class="fas fa-file-upload"></i><span>Upload from PDF (Test Planners)</span></a>
+                      <a href="/upload-questions-subjectwise-format2/"><i class="fas fa-file-upload"></i><span>Upload from PDF (Regular)</span></a>
+    </div>
+    <!--sidebar end-->
+    <!--content start-->
+    <div class="content">
+      <br><br><br><br><br>
+      {% block content %}
+      {% endblock content %}
+      <br><br><br>
+      {% include 'exam/footer.html' %}
+    </div>
+    <!--content end-->
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
